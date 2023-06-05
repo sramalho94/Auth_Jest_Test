@@ -1,9 +1,13 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-require('dotenv').config()
+require('dotenv').config({ path: '.env.local' })
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS)
 const APP_SECRET = process.env.APP_SECRET
+
+if (!APP_SECRET || !SALT_ROUNDS) {
+  throw new Error('Missing necessary environment variables - check your setup!')
+}
 
 const hashPassword = async (password) => {
   let hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
