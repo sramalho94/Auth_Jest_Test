@@ -48,3 +48,24 @@ On a basic level, our test file can be broken down into 3 parts:
 - AfterAll: delete anything you created in your BeforeAll block
 
 Keep in mind that you can also use beforeEach blocks and afterEach blocks as well. Use whichever is better fitted for your situation.
+
+---
+
+## .ENV Variables
+
+---
+
+### Note: It is never a good idea to store env variables on an online repository but for the purpose of this lesson, my .env.local file looks like the following:
+
+APP_SECRET=TOPGROUPTHREEISDABEST
+SALT_ROUNDS=12
+DB_USERNAME=postgres
+DB_PASSWORD=password
+DB_NAME_TEST=authjt_test
+DB_NAME=authjt_development
+DB_USERNAME_PROD=postgres_prod
+DB_PASSWORD_PROD=password_prod
+DB_NAME_PROD=authjt_production
+DB_HOST_PROD=your_production_db_host
+
+### Your DB_USERNAME should be the username you use to log into your machine
