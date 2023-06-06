@@ -17,7 +17,7 @@ const Login = async (req, res) => {
         fullName: user.fullName
       }
       let token = middleware.createToken(payload)
-      return res.status(201).send({ user: payload, token })
+      return res.status(200).send({ user: payload, token })
     }
     res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
   } catch (error) {
