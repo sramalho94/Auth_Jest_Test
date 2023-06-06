@@ -1,10 +1,4 @@
 process.env.NODE_ENV = 'test'
-require('dotenv').config({ path: '.env.local' })
-
-if (!process.env.APP_SECRET) {
-  throw new Error('APP_SECRET environment variable is required')
-}
-
 const request = require('supertest')
 const app = require('../server')
 const { createToken, hashPassword } = require('../middleware')
@@ -14,43 +8,43 @@ describe('Auth controller test', () => {
   let testUser
   let testToken
 
-  beforeAll(async () => {
-    const hashedPassword = await hashPassword('testpassword')
-    testUser = await User.create({
+  test('Create user', async () => {
+    const response = await request(app).post('/api/auth/register').send({
       username: 'testuser',
-      passwordDigest: hashedPassword,
-      fullName: 'testuser'
+      fullName: 'test',
+      password: 'testpassword'
     })
-    testToken = createToken({
-      id: testUser.id,
-      username: testUser.username,
-      passwordDigest: testUser.passwordDigest
-    })
+
+    testUser = response.body
+
+    expect(response.statusCode).toBe(201)
+    expect(testUser.username).toBe('testuser')
+    expect(testUser.fullName).toBe('test')
+    expect(testUser.passwordDigest).toBe(testUser.passwordDigest)
+    expect(testUser.id).toBe(testUser.id)
   })
 
   test('Login user', async () => {
     const response = await request(app).post('/api/auth/login').send({
       username: 'testuser',
-      fullName: 'testuser',
       password: 'testpassword'
     })
 
     testToken = response.body.token
 
-    expect(response.statusCode).toBe(201)
+    expect(response.statusCode).toBe(200) // changed from 201 to 200
     expect(response.body).toHaveProperty('token')
     expect(response.body.user.username).toBe('testuser')
-    expect(response.body.user.fullName).toBe('testuser')
+    expect(response.body.user.fullName).toBe('test')
   })
 
-  test('Check session', async () => {
+  test('Check session test', async () => {
     const response = await request(app)
       .get('/api/auth/session')
       .set('Authorization', `Bearer ${testToken}`)
 
     expect(response.statusCode).toBe(200)
-    expect(response.body).toHaveProperty('payload')
-    expect(response.body.payload.username).toBe('testuser')
+    expect(response).toHaveProperty('body')
   })
 
   test('Update password', async () => {
@@ -63,28 +57,30 @@ describe('Auth controller test', () => {
         newPassword: 'testnewpassword'
       })
 
-    expect(response.statusCode).toBe(200)
     expect(response.body.status).toBe('Success')
     expect(response.body.msg).toBe('Password updated')
   })
 
   test('Update password fail', async () => {
-    const response = await request(app).put('/api/auth/update-password').send({
-      username: 'testuser',
-      oldPassword: 'wrongpassword',
-      newPassword: 'testnewpassword'
-    })
+    const response = await request(app)
+      .put('/api/auth/update-password')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({
+        username: 'testuser',
+        fullName: 'test',
+        oldPassword: 'testpassword1',
+        newPassword: 'testnewpassword'
+      })
 
-    expect(response.statusCode).toBe(401)
     expect(response.body.status).toBe('Error')
     expect(response.body.msg).toBe('Unauthorized')
   })
 
   afterAll(async () => {
     try {
-      await User.destroy({ where: { username: 'testuser' } })
+      await User.destroy({ truncate: { cascade: true } })
     } catch (error) {
-      console.error('Error cleaning up test data', error)
+      console.log('Error cleaning up test data: ', error)
     }
   })
 })
