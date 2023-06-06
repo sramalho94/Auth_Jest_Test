@@ -1,13 +1,9 @@
+require('dotenv').config({ path: '.env.local' })
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-require('dotenv').config({ path: '.env.local' })
 
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS)
 const APP_SECRET = process.env.APP_SECRET
-
-if (!APP_SECRET || !SALT_ROUNDS) {
-  throw new Error('Missing necessary environment variables - check your setup!')
-}
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS)
 
 const hashPassword = async (password) => {
   let hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
@@ -46,7 +42,7 @@ const stripToken = (req, res, next) => {
       return next()
     }
   } catch (error) {
-    res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
+    res.status(401).send({ status: 'Error', msg: 'Unauthorized', token: token }) // added token to the error message
   }
 }
 
