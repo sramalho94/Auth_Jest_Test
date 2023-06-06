@@ -10,6 +10,11 @@ Router.get(
 )
 Router.post('/register', controller.Register)
 Router.post('/login', controller.Login)
-Router.put('/update-password', controller.UpdatePassword)
+Router.put(
+  '/update-password',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.UpdatePassword
+)
 
 module.exports = Router
