@@ -13,7 +13,7 @@
 ---
 
 - fork and clone the repo to your local machine
-- configure the config.json file with your username and password
+- create a `.env.local` file in the root of the project, see below for variable values.
 - run `npm i`
 - run `sequelize db:create`
 - run `sequelize db:create --env test`
