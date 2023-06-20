@@ -1,5 +1,6 @@
 'use strict'
 const { Model } = require('sequelize')
+const { encrypt, decrypt } = require('../middleware/cryptoUtils')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -17,7 +18,16 @@ module.exports = (sequelize, DataTypes) => {
   User.init(
     {
       username: DataTypes.STRING,
-      fullName: DataTypes.STRING,
+      fullName: {
+        type: DataTypes.STRING,
+        get() {
+          const rawValue = this.getDataValue('fullName')
+          return decrypt(rawValue)
+        },
+        set(val) {
+          this.setDataValue('fullName', encrypt(val))
+        }
+      },
       passwordDigest: DataTypes.STRING
     },
     {
