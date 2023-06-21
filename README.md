@@ -67,5 +67,30 @@ DB_USERNAME_PROD=postgres_prod
 DB_PASSWORD_PROD=password_prod
 DB_NAME_PROD=authjt_production
 DB_HOST_PROD=your_production_db_host
+SECRET_KEY=vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3
+ALGORITHM=aes-256-cbc
 
 ### Your DB_USERNAME should be the username you use to log into your machine
+
+---
+
+## Crypto
+
+---
+
+Along with Auth, we are using the `Crypto` package to encrypt user data
+
+### Workflow
+
+To get started with Crypto, follow these steps
+
+- touch middleware/cryptoUtils.js
+- create your methods: `encrypt` and `decrypt`
+- within the User model, modify the keys you want to be encrypted
+
+  - add `get()` and `set()` within `fullname` key
+
+- go into `psql` and confirm that the key is encrypted
+- using a tool like `postman` or `insomnia` do a get request and make sure that the key is not encrypted
+
+  - ie the user's info will be decrypted on the frontend, and encrypted on the backend
