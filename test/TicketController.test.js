@@ -6,7 +6,7 @@ const { User, Event, Ticket } = require('../models')
 
 let testToken
 
-describe('Ticker controller tests', () => {
+describe('Ticket controller tests', () => {
   let testUser
   let testUserId
   let testUserId2

@@ -16,8 +16,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   Ticket.init(
     {
-      userId: DataTypes.INTEGER,
-      eventId: DataTypes.INTEGER
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+      eventId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'events',
+          key: 'id'
+        }
+      }
     },
     {
       sequelize,
