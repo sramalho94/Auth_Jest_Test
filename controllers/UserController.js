@@ -33,7 +33,7 @@ class UserController {
   async updateUser(req, res) {
     try {
       const { id } = req.params
-      const [updated] = await User.update(req.body, {
+      const updated = await User.update(req.body, {
         where: { id: id }
       })
       if (updated) {
